@@ -9,7 +9,7 @@ use tauri::{
     plugin::{PluginHandle, TauriPlugin},
 };
 
-pub struct AndroidDownloader(PluginHandle<Wry>);
+pub pub(crate) struct AndroidDownloader(PluginHandle<Wry>);
 
 pub fn plugin() -> TauriPlugin<Wry> {
     tauri::plugin::Builder::new("android-downloader")
@@ -66,7 +66,7 @@ pub fn cancel_download() -> Result<(), String> {
 }
 
 #[derive(Serialize)]
-pub struct DownloadEvent {
+pub pub(crate) struct DownloadEvent {
     kind: &'static str,
     text: String,
 }
