@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::{thread, time::Duration};
 use tauri::{
-    State, Wry,
+    Manager, State, Wry,
     ipc::Channel,
     plugin::{PluginHandle, TauriPlugin},
 };
