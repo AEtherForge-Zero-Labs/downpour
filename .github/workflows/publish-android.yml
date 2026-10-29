@@ -1,0 +1,81 @@
+name: Publish Android release
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-android.yml']
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Successful Android APK workflow run from main'
+        required: true
+        default: '40931885065'
+permissions:
+  actions: read
+  contents: write
+concurrency:
+  group: publish-android
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id || '40931885065' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source build and read app version
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID" > "$RUNNER_TEMP/android-source.json"
+          jq -e --arg repo "$GITHUB_REPOSITORY" '.conclusion == "success" and .name == "Android APK" and .head_branch == "main" and .head_repository.full_name == $repo' "$RUNNER_TEMP/android-source.json"
+          source_sha=$(jq -r .head_sha "$RUNNER_TEMP/android-source.json")
+          gh api "repos/$GITHUB_REPOSITORY/contents/package.json?ref=$source_sha" --jq .content | base64 --decode > "$RUNNER_TEMP/android-package.json"
+          version=$(jq -r .version "$RUNNER_TEMP/android-package.json")
+          echo "run_id=$SOURCE_RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "sha=$source_sha" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version-android-preview.$GITHUB_RUN_NUMBER" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.source.outputs.run_id }}
+          name: downpour-android-arm64-debug
+          path: android-build
+      - name: Verify and prepare APK
+        env:
+          APP_VERSION: ${{ steps.source.outputs.version }}
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=$(find android-build -name '*.apk' | head -n 1)
+          test -n "$apk"
+          signer=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)
+          "$signer" verify --verbose --print-certs "$apk"
+          mkdir -p release-assets
+          filename="Downpour_${APP_VERSION}_android_arm64-preview.apk"
+          cp "$apk" "release-assets/$filename"
+          cd release-assets
+          sha256sum "$filename" > "$filename.sha256"
+          cd ..
+          cat > android-release-notes.md <<NOTES
+          Install the APK below on **Android 10+ (ARM64)**. This is a development-signed Android preview.
+
+          - Downloads MP4 video with audio: best available, up to 720p, or up to 480p.
+          - Saves completed videos to **Downloads/Downpour** using scoped storage.
+          - Includes the embedded yt-dlp runtime; keep the app open while downloading.
+          - Audio extraction, conversion, cancellation, and background downloads are not supported in this Android preview.
+
+          Built from [$SOURCE_SHA](https://github.com/$GITHUB_REPOSITORY/commit/$SOURCE_SHA) in [successful Android build $SOURCE_RUN_ID](https://github.com/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID). The APK signature was verified before publication; its SHA-256 checksum is included below. Physical-device behavior has not been verified. Later previews may require uninstalling this development-signed build first.
+          NOTES
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.source.outputs.tag }}
+          target_commitish: ${{ steps.source.outputs.sha }}
+          name: Downpour Android ${{ steps.source.outputs.version }} preview
+          prerelease: true
+          body_path: android-release-notes.md
+          files: release-assets/*
+          fail_on_unmatched_files: true
