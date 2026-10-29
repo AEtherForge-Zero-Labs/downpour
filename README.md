@@ -6,7 +6,7 @@ A desktop and Android YouTube downloader with a focused interface for [yt-dlp](h
 
 Get the macOS, Windows, or Linux installer from [Releases](https://github.com/AEtherForge-Zero-Labs/downpour/releases). GitHub Actions builds installers when the version in `package.json` changes, including the first publication. Builds are unsigned and not notarized.
 
-## Features
+## Features (desktop)
 
 - Video with audio: MP4, MKV, WebM; best available or a resolution cap from 480p to 4K.
 - Audio extraction: MP3, M4A, WAV, FLAC, Opus; best quality or a selected bitrate. Source quality limits the result.
@@ -16,11 +16,11 @@ Get the macOS, Windows, or Linux installer from [Releases](https://github.com/AE
 - Saves preferences locally, without keeping pasted URLs in persistent storage.
 - Checks the installed yt-dlp version against GitHub's latest stable release on launch and on demand.
 
-The latest stable release verified on **October 29, 2026** is [yt-dlp 2026.10.26](https://github.com/yt-dlp/yt-dlp/releases/tag/2026.10.26). This is a reference, not a pinned engine: Downpour uses your installed yt-dlp and checks for newer releases. Update it using the package manager or installer used to install it, then click **Refresh tools**.
+For desktop installations, the latest stable release verified on **October 29, 2026** is [yt-dlp 2026.10.26](https://github.com/yt-dlp/yt-dlp/releases/tag/2026.10.26). This is a reference, not a pinned engine: Downpour uses your installed yt-dlp and checks for newer releases. Update it using the package manager or installer used to install it, then click **Refresh tools**.
 
 ## Install the download tools
 
-Downpour requires **yt-dlp** and **FFmpeg** installed separately. A [supported JavaScript runtime](https://github.com/yt-dlp/yt-dlp#dependencies), preferably Deno, is recommended for YouTube. The release checker uses `curl`, included on macOS and current Windows and available through Linux package managers.
+On desktop, Downpour requires **yt-dlp** and **FFmpeg** installed separately. A [supported JavaScript runtime](https://github.com/yt-dlp/yt-dlp#dependencies), preferably Deno, is recommended for YouTube. The release checker uses `curl`, included on macOS and current Windows and available through Linux package managers.
 
 macOS:
 
