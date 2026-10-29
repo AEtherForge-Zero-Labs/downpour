@@ -14,7 +14,8 @@ struct AndroidDownloader(PluginHandle<Wry>);
 pub fn plugin() -> TauriPlugin<Wry> {
     tauri::plugin::Builder::new("android-downloader")
         .setup(|app, api| {
-            let plugin = api.register_android_plugin("com.aetherforge.downpour", "DownloaderPlugin")?;
+            let plugin =
+                api.register_android_plugin("com.aetherforge.downpour", "DownloaderPlugin")?;
             app.manage(AndroidDownloader(plugin));
             Ok(())
         })
@@ -71,7 +72,10 @@ struct DownloadEvent {
 }
 
 fn send(events: &Channel<DownloadEvent>, kind: &'static str, text: impl Into<String>) {
-    let _ = events.send(DownloadEvent { kind, text: text.into() });
+    let _ = events.send(DownloadEvent {
+        kind,
+        text: text.into(),
+    });
 }
 
 #[derive(Deserialize)]
@@ -95,8 +99,11 @@ pub async fn start_download(
     if !matches!(options.quality.as_str(), "best" | "720" | "480") {
         return Err("Android quality must be Best, 720p, or 480p.".into());
     }
-    if options.subtitles || options.thumbnail || options.metadata || !options.rate_limit.is_empty() {
-        return Err("Subtitles, thumbnails, metadata embedding, and rate limits require desktop.".into());
+    if options.subtitles || options.thumbnail || options.metadata || !options.rate_limit.is_empty()
+    {
+        return Err(
+            "Subtitles, thumbnails, metadata embedding, and rate limits require desktop.".into(),
+        );
     }
 
     let handle = state.0.clone();
