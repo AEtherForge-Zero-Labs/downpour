@@ -1,6 +1,6 @@
 # Downpour
 
-A desktop YouTube downloader with a focused interface for [yt-dlp](https://github.com/yt-dlp/yt-dlp), built from [NeonSupernova/tauri-app](https://github.com/NeonSupernova/tauri-app) using Tauri 2, Svelte 5, TypeScript, and Rust.
+A desktop and Android YouTube downloader with a focused interface for [yt-dlp](https://github.com/yt-dlp/yt-dlp), built from [NeonSupernova/tauri-app](https://github.com/NeonSupernova/tauri-app) using Tauri 2, Svelte 5, TypeScript, and Rust.
 
 ## Download
 
@@ -48,6 +48,27 @@ Paste a YouTube video or playlist URL, choose the mode, format, quality, and fol
 
 Download only content you own or have permission to save. Site availability, authentication requirements, and format availability are controlled by YouTube and yt-dlp. DRM circumvention is not provided.
 
+## Android (experimental)
+
+Android uses **embedded yt-dlp**, not the desktop subprocess backend. It currently supports **MP4 video with audio**, at Best, up to 720p, or up to 480p. Without FFmpeg, Android downloads an already-muxed single video/audio stream, so availability and quality differ from the desktop edition. Audio extraction, conversion, embedded metadata, thumbnails, subtitles, bandwidth limits, cancellation, and background downloads are not supported in this initial version. Keep the app open during downloads.
+
+Completed videos are saved to **Files → Downloads → Downpour** using Android's scoped storage. The target is **Android 10+ on ARM64**. YouTube extraction may fail depending on site conditions or the bundled yt-dlp version.
+
+The [Android APK workflow](.github/workflows/android.yml) builds a **debug APK** as a downloadable GitHub Actions artifact. It is not a Play Store release or a production-signed installer. The native bridge is maintained at `src-tauri/android/DownloaderPlugin.kt` and copied to Tauri's generated Android project by `scripts/prepare-android.mjs`. The embedded runtime uses [yt-dlp-android](https://github.com/ffmpegkit-maintained/yt-dlp-android) v2.0.2; its bundled components retain their upstream licenses.
+
+Install the [Tauri Android prerequisites](https://v2.tauri.app/start/prerequisites/) (Android SDK and NDK, Java 17, Rust ARM64 target, and cargo-ndk):
+
+```sh
+npm install
+npm run android:init
+npm run android:prepare
+npm run android:dev
+# Or build a debug APK:
+npm run android:apk
+```
+
+Repeat `npm run android:prepare` if `tauri android init` regenerates the Android project. **This Android implementation is unverified on a physical device**; test before distribution.
+
 ## Development
 
 Requires Node.js 22+, Rust stable, and the [Tauri platform prerequisites](https://v2.tauri.app/start/prerequisites/).
@@ -67,7 +88,7 @@ npm run tbuild
 
 `npm run dev` starts a browser preview. A browser cannot run local yt-dlp or save downloads through this app; download controls are disabled and the preview explains how to use the desktop app.
 
-The template's native Rust core is used to validate options and construct argument vectors. It has been adapted to a desktop-only downloader; unused WASM demos and mobile targets are omitted. Frontend dependency versions are pinned to the versions used for local validation. Install with npm; no frontend lockfile is included.
+The template's native Rust core is used to validate options and construct argument vectors. It has been adapted to a desktop downloader with a distinct experimental Android backend; unused WASM demos are omitted. Frontend dependency versions are pinned to the versions used for local validation. Install with npm; no frontend lockfile is included.
 
 ## Process and security design
 
@@ -75,6 +96,6 @@ Commands use argument vectors rather than a shell. URLs are restricted to HTTP(S
 
 ## Publishing
 
-`.github/workflows/ci.yml` checks the frontend, Rust core tests, and formatting. `.github/workflows/release.yml` builds macOS app/DMG, Windows NSIS, and Linux DEB/AppImage installers and publishes a GitHub release. To release again, bump `package.json` and the workspace version in `Cargo.toml`, update `Cargo.lock`, and push to `main`. The release workflow can also be run manually.
+`.github/workflows/android.yml` builds an ARM64 Android debug APK artifact on push and pull requests. `.github/workflows/ci.yml` checks the frontend, Rust core tests, and formatting. `.github/workflows/release.yml` builds macOS app/DMG, Windows NSIS, and Linux DEB/AppImage installers and publishes a GitHub release. To release again, bump `package.json` and the workspace version in `Cargo.toml`, update `Cargo.lock`, and push to `main`. The release workflow can also be run manually.
 
 MIT licensed. Template attribution: NeonSupernova/tauri-app. yt-dlp and FFmpeg are separate projects with their own licenses and are not bundled.
