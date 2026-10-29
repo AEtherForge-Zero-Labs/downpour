@@ -27,7 +27,7 @@
   const ready = $derived(native && !loading && !!ytDlp && (android || ffmpeg));
 
   onMount(() => {
-    try { const saved = localStorage.getItem('downpour-settings'); if (saved) { const { url: _url, ...settings } = JSON.parse(saved); options = { ...options, ...settings, url: '' }; } if (android) { options.mode = 'video'; options.format = 'mp4'; options.quality = ['best', '720', '480'].includes(options.quality) ? options.quality : '720'; options.metadata = false; options.subtitles = false; options.thumbnail = false; options.rateLimit = ''; } } catch { /* A fresh start if storage is unavailable. */ }
+    try { const saved = localStorage.getItem('downpour-settings'); if (saved) { const { url: _url, ...settings } = JSON.parse(saved); options = { ...options, ...settings, url: '' }; } if (android) { options.mode = 'video'; options.format = 'mp4'; options.quality = ['best', '720', '480'].includes(options.quality) ? options.quality : '720'; options.directory = '/Downloads/Downpour'; options.metadata = false; options.subtitles = false; options.thumbnail = false; options.rateLimit = ''; } } catch { /* A fresh start if storage is unavailable. */ }
     void refresh();
     if (native && !android) void checkVersion();
   });
