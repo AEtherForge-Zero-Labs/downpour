@@ -40,7 +40,7 @@
   }
   function setMode(mode: 'video' | 'audio') {
     if (android && mode === 'audio') return;
-    options.mode = mode; options.format = mode === 'video' ? 'mp4' : 'mp3'; options.quality = mode === 'video' ? '1080' : '0'; command = '';
+    options.mode = mode; options.format = mode === 'video' ? 'mp4' : 'mp3'; options.quality = mode === 'video' ? (android ? '720' : '1080') : '0'; command = '';
   }
   async function checkVersion() {
     checking = true; updateError = '';
