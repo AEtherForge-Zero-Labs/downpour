@@ -13,7 +13,8 @@
     "tbuild": "tauri build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "test": "cargo test -p app-core"
+    "test": "cargo test -p app-core",
+    "tauri": "tauri"
   },
   "license": "MIT",
   "dependencies": {
