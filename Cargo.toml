@@ -1,0 +1,18 @@
+[workspace]
+resolver = "3"
+members = ["crates/core", "src-tauri"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+app-core = { path = "crates/core" }
+
+[profile.release]
+# Smaller binaries / .wasm; drop these if you prefer faster release builds
+lto = true
+codegen-units = 1
+opt-level = 3
+

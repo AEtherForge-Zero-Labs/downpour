@@ -1,0 +1,18 @@
+{
+  "extends": "./.svelte-kit/tsconfig.json",
+  "include": [
+    "src",
+    "*"
+  ],
+  "exclude": [
+    "src/service-worker",
+    "src/lib/wasm/*.js"
+  ],
+  "compilerOptions": {
+    "types": [
+      "svelte",
+      "vite/client",
+      "node"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+[package]
+name = "app-core"
+description = "Validated yt-dlp download options"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+url = "2"
