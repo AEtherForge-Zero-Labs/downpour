@@ -92,10 +92,10 @@ The template's native Rust core is used to validate options and construct argume
 
 ## Process and security design
 
-Commands use argument vectors rather than a shell. URLs are restricted to HTTP(S) YouTube hosts; modes, formats, quality, fragment counts, paths, and bandwidth limits are validated in Rust. Arbitrary shell arguments, yt-dlp configuration files, and plugin directories are not loaded. Downloads run one job at a time and cancellation stops the process group on Unix or the process tree on Windows, including FFmpeg. Closing the window also stops the active job. The release checker only reads GitHub's official API; it does not modify or self-update the installed executable.
+On desktop, commands use argument vectors rather than a shell. URLs are restricted to HTTP(S) YouTube hosts; modes, formats, quality, fragment counts, paths, and bandwidth limits are validated in Rust. Arbitrary shell arguments, yt-dlp configuration files, and plugin directories are not loaded. Downloads run one job at a time and cancellation stops the process group on Unix or the process tree on Windows, including FFmpeg. Closing the window also stops the active job. The release checker only reads GitHub's official API; it does not modify or self-update the installed executable.
 
 ## Publishing
 
 `.github/workflows/android.yml` builds an ARM64 Android debug APK artifact on push and pull requests. `.github/workflows/ci.yml` checks the frontend, Rust core tests, and formatting. `.github/workflows/release.yml` builds macOS app/DMG, Windows NSIS, and Linux DEB/AppImage installers and publishes a GitHub release. To release again, bump `package.json` and the workspace version in `Cargo.toml`, update `Cargo.lock`, and push to `main`. The release workflow can also be run manually.
 
-MIT licensed. Template attribution: NeonSupernova/tauri-app. yt-dlp and FFmpeg are separate projects with their own licenses and are not bundled.
+MIT licensed. Template attribution: NeonSupernova/tauri-app. yt-dlp and FFmpeg are separate projects with their own licenses. They are not bundled with desktop builds; Android embeds yt-dlp via the documented third-party library.
