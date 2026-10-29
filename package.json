@@ -1,7 +1,7 @@
 {
   "name": "downpour",
   "version": "0.1.0",
-  "description": "A focused desktop interface for yt-dlp",
+  "description": "A focused desktop and Android interface for yt-dlp",
   "type": "module",
   "imports": {
     "#lib/*": "./src/lib/*"
@@ -14,7 +14,11 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "cargo test -p app-core",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "android:init": "tauri android init --ci",
+    "android:prepare": "node scripts/prepare-android.mjs",
+    "android:dev": "tauri android dev",
+    "android:apk": "tauri android build --debug --apk --target aarch64 --ci"
   },
   "license": "MIT",
   "dependencies": {

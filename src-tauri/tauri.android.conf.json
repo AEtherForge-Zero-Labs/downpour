@@ -1,0 +1,8 @@
+{
+  "bundle": {
+    "android": {
+      "minSdkVersion": 29
+    }
+  },
+  "identifier": "com.aetherforge.downpour"
+}

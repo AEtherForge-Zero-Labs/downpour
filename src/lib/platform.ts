@@ -1,5 +1,6 @@
 import { invoke, isTauri, Channel } from '@tauri-apps/api/core';
 export const native = isTauri();
+export const android = native && typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent);
 export interface Options {
   url: string; mode: 'video' | 'audio'; format: string; quality: string;
   directory: string; playlist: boolean; subtitles: boolean; thumbnail: boolean;
