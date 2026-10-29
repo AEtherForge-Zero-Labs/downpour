@@ -1,7 +1,7 @@
 {
   "name": "downpour",
   "version": "0.1.0",
-  "description": "A focused desktop interface for yt-dlp",
+  "description": "A focused desktop and Android interface for yt-dlp",
   "type": "module",
   "imports": {
     "#lib/*": "./src/lib/*"
